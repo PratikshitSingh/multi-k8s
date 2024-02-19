@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+ 
+kind: Certificate
+metadata:
+  name: fibbonaci-daddy-com-tls
+spec:
+  secretName: fibbonaci-daddy-com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: fibbonaci-daddy.com
+  dnsNames:
+    - fibbonaci-daddy.com
+    - www.fibbonaci-daddy.com

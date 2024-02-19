@@ -8,12 +8,44 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
     # ADD ANNOTATION
     nginx.ingress.kubernetes.io/rewrite-target: /$1
-    # ADD ANNOTATION
+    # For cert-manager to know which issuer to use
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    # To force nginx to redirect users to use HTTPS
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
 spec:
+  tls:
+    - hosts:
+        - fibbonaci-daddy.com
+        - www.fibbonaci-daddy.com
+      secretName: fibbonaci-daddy-com-tls
   ingressClassName: nginx
   # ADD INGRESSCLASSNAME FIELD
   rules:
-    - http:
+    - host: fibbonaci-daddy.com
+      http:
+        paths:
+          - path: /?(.*)
+            # UPDATE PATH
+            pathType: ImplementationSpecific
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: client-cluster-ip-service
+                port:
+                  number: 3000
+          - path: /api/?(.*)
+            # UPDATE PATH
+            pathType: ImplementationSpecific
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: server-cluster-ip-service
+                port:
+                  number: 5000
+    - host: www.fibbonaci-daddy.com
+      http:
         paths:
           - path: /?(.*)
             # UPDATE PATH
